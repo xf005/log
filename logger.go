@@ -25,7 +25,7 @@ type Logger struct {
 	zapConfig zap.Config
 }
 
-func NewLogger(opts ...LogOptions) {
+func NewLogger(opts ...Option) {
 	once.Do(func() {
 		l = &Logger{
 			opts: newOptions(opts...),
@@ -95,7 +95,7 @@ func (l *Logger) loadCfg() {
 
 func (l *Logger) setSyncers() {
 	outWrite = zapcore.AddSync(&lumberjack.Logger{
-		Filename:   fmt.Sprintf("%s/%s.log", l.opts.LogFileDir, l.opts.Name),
+		Filename:   fmt.Sprintf("%s/%s.log", l.opts.FileDir, l.opts.Name),
 		MaxSize:    l.opts.MaxSize,
 		MaxAge:     l.opts.MaxAge,
 		MaxBackups: 10,

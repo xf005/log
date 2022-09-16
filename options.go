@@ -3,18 +3,18 @@ package log
 import "path/filepath"
 
 type Options struct {
-	Dev        bool   // 是否开发模式
-	Level      string // 日志打印等级
-	CtxKey     string // 通过 ctx 传递 log 对象
-	Name       string // APP名字
-	MaxSize    int    // 文件最大多少M进行分割
-	MaxAge     int    // 文件保留天数
-	LogFileDir string // 日志路径
+	Dev     bool   // 是否开发模式
+	Level   string // 日志打印等级
+	CtxKey  string // 通过 ctx 传递 log 对象
+	Name    string // APP名字
+	MaxSize int    // 文件最大多少M进行分割
+	MaxAge  int    // 文件保留天数
+	FileDir string // 日志路径
 }
 
-type LogOptions func(*Options)
+type Option func(*Options)
 
-func newOptions(opts ...LogOptions) *Options {
+func newOptions(opts ...Option) *Options {
 	opt := &Options{
 		Dev:     true,
 		Level:   "debug",
@@ -23,51 +23,51 @@ func newOptions(opts ...LogOptions) *Options {
 		MaxSize: 500,
 		MaxAge:  30,
 	}
-	opt.LogFileDir, _ = filepath.Abs(filepath.Dir(filepath.Join(".")))
-	opt.LogFileDir += "./logs/"
+	opt.FileDir, _ = filepath.Abs(filepath.Dir(filepath.Join(".")))
+	opt.FileDir += "./logs/"
 	for _, o := range opts {
 		o(opt)
 	}
 	return opt
 }
 
-func SetDev(dev bool) LogOptions {
+func SetDev(dev bool) Option {
 	return func(options *Options) {
 		options.Dev = dev
 	}
 }
 
-func SetLogFileDir(logFileDir string) LogOptions {
+func SetFileDir(fileDir string) Option {
 	return func(options *Options) {
-		options.LogFileDir = logFileDir
+		options.FileDir = fileDir
 	}
 }
 
-func SetName(name string) LogOptions {
+func SetName(name string) Option {
 	return func(options *Options) {
 		options.Name = name
 	}
 }
 
-func SetMaxSize(maxSize int) LogOptions {
+func SetMaxSize(maxSize int) Option {
 	return func(options *Options) {
 		options.MaxSize = maxSize
 	}
 }
 
-func SetMaxAge(maxAge int) LogOptions {
+func SetMaxAge(maxAge int) Option {
 	return func(options *Options) {
 		options.MaxAge = maxAge
 	}
 }
 
-func SetLevel(level string) LogOptions {
+func SetLevel(level string) Option {
 	return func(options *Options) {
 		options.Level = level
 	}
 }
 
-func SetCtxKey(ctxKey string) LogOptions {
+func SetCtxKey(ctxKey string) Option {
 	return func(options *Options) {
 		options.CtxKey = ctxKey
 	}
